@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fusionos-cad"
+version = "0.1.0"
+description = "Independent offline parametric CAD prototype built on Open CASCADE"
+requires-python = ">=3.11,<3.13"
+license = "MIT"
+dependencies = ["cadquery==2.7.0", "PySide6==6.8.3", "vtk==9.3.1"]
+
+[project.scripts]
+fusionos = "fusionos.app:main"
+
+[tool.setuptools.packages.find]
+include = ["fusionos*"]

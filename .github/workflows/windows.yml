@@ -1,0 +1,33 @@
+name: Windows experimental executable
+on:
+  workflow_dispatch:
+  push:
+    tags: ['v*']
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: windows-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install . pyinstaller
+      - name: Tests
+        env:
+          QT_QPA_PLATFORM: offscreen
+        run: python -m unittest discover -s tests -v
+      - name: Bundle application
+        run: python -m PyInstaller --noconfirm --onedir --windowed --name fusionOS --collect-all cadquery --collect-all OCP --collect-all vtkmodules launch.py
+      - name: Include notices and documentation
+        shell: pwsh
+        run: |
+          python scripts/collect_licenses.py dist/fusionOS/THIRD_PARTY_NOTICES
+          Copy-Item LICENSE,README.md -Destination dist/fusionOS
+          Copy-Item docs -Destination dist/fusionOS -Recurse
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fusionOS-Windows-experimental
+          path: dist/fusionOS/

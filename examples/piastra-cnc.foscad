@@ -1,0 +1,176 @@
+{
+  "format": "fusionos-project",
+  "version": 1,
+  "units": "mm",
+  "nodes": [
+    {
+      "id": "30874dbb4b5a407ea4129c179e01f5ef",
+      "kind": "box",
+      "name": "Piastra 100 × 60 × 8",
+      "params": {
+        "length": 100.0,
+        "width": 60.0,
+        "height": 8.0
+      },
+      "inputs": [],
+      "visible": false
+    },
+    {
+      "id": "d389908a269144b2a9c04c25f1bdda8b",
+      "kind": "fillet",
+      "name": "Raccordi R2",
+      "params": {
+        "radius": 2.0,
+        "edges": []
+      },
+      "inputs": [
+        "30874dbb4b5a407ea4129c179e01f5ef"
+      ],
+      "visible": false
+    },
+    {
+      "id": "0664a9de02234d869cd271c4d4b47043",
+      "kind": "cylinder",
+      "name": "Utensile foro 1",
+      "params": {
+        "radius": 3.0,
+        "height": 12.0
+      },
+      "inputs": [],
+      "visible": false
+    },
+    {
+      "id": "62583a86b4e34541a6d12015f3988f38",
+      "kind": "translate",
+      "name": "Posizione foro 1",
+      "params": {
+        "x": -38.0,
+        "y": -18.0,
+        "z": -6.0
+      },
+      "inputs": [
+        "0664a9de02234d869cd271c4d4b47043"
+      ],
+      "visible": false
+    },
+    {
+      "id": "9b41ef7951754a10b31eeface237c759",
+      "kind": "cut",
+      "name": "Foro 1 Ø6",
+      "params": {},
+      "inputs": [
+        "d389908a269144b2a9c04c25f1bdda8b",
+        "62583a86b4e34541a6d12015f3988f38"
+      ],
+      "visible": false
+    },
+    {
+      "id": "5711bafcba8241f6afa65bea37ba71f7",
+      "kind": "cylinder",
+      "name": "Utensile foro 2",
+      "params": {
+        "radius": 3.0,
+        "height": 12.0
+      },
+      "inputs": [],
+      "visible": false
+    },
+    {
+      "id": "d8b9ebcd177645208e35aeed4b1f3e7d",
+      "kind": "translate",
+      "name": "Posizione foro 2",
+      "params": {
+        "x": 38.0,
+        "y": -18.0,
+        "z": -6.0
+      },
+      "inputs": [
+        "5711bafcba8241f6afa65bea37ba71f7"
+      ],
+      "visible": false
+    },
+    {
+      "id": "4c3db46307f644cbadf58796ad7eb7e2",
+      "kind": "cut",
+      "name": "Foro 2 Ø6",
+      "params": {},
+      "inputs": [
+        "9b41ef7951754a10b31eeface237c759",
+        "d8b9ebcd177645208e35aeed4b1f3e7d"
+      ],
+      "visible": false
+    },
+    {
+      "id": "1b48b5a750f54601ab1d58a6ef023feb",
+      "kind": "cylinder",
+      "name": "Utensile foro 3",
+      "params": {
+        "radius": 3.0,
+        "height": 12.0
+      },
+      "inputs": [],
+      "visible": false
+    },
+    {
+      "id": "5c102f336ff043b2a1d5b74c5677b3b9",
+      "kind": "translate",
+      "name": "Posizione foro 3",
+      "params": {
+        "x": 38.0,
+        "y": 18.0,
+        "z": -6.0
+      },
+      "inputs": [
+        "1b48b5a750f54601ab1d58a6ef023feb"
+      ],
+      "visible": false
+    },
+    {
+      "id": "437ecc13da534f188c3f0b7378238dcb",
+      "kind": "cut",
+      "name": "Foro 3 Ø6",
+      "params": {},
+      "inputs": [
+        "4c3db46307f644cbadf58796ad7eb7e2",
+        "5c102f336ff043b2a1d5b74c5677b3b9"
+      ],
+      "visible": false
+    },
+    {
+      "id": "e4424de165ab4bae8b37dcf38b4e93cd",
+      "kind": "cylinder",
+      "name": "Utensile foro 4",
+      "params": {
+        "radius": 3.0,
+        "height": 12.0
+      },
+      "inputs": [],
+      "visible": false
+    },
+    {
+      "id": "713c0be6b00349f290ffb9dc19109cde",
+      "kind": "translate",
+      "name": "Posizione foro 4",
+      "params": {
+        "x": -38.0,
+        "y": 18.0,
+        "z": -6.0
+      },
+      "inputs": [
+        "e4424de165ab4bae8b37dcf38b4e93cd"
+      ],
+      "visible": false
+    },
+    {
+      "id": "dce9928a83204db9b02f3251b4c0cf5a",
+      "kind": "cut",
+      "name": "Foro 4 Ø6",
+      "params": {},
+      "inputs": [
+        "437ecc13da534f188c3f0b7378238dcb",
+        "713c0be6b00349f290ffb9dc19109cde"
+      ],
+      "visible": true
+    }
+  ]
+}
