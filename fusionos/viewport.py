@@ -22,7 +22,8 @@ class Viewport(QtWidgets.QWidget):
         self.centre = np.zeros(3)
         self._last = None
         self._press = None
-        self._hit = []
+        self._pick_buffer = None
+        self._pick_keys = []
         self.tolerance = 0.15
         self.show_grid = True
 
@@ -67,8 +68,12 @@ class Viewport(QtWidgets.QWidget):
             painter.drawLine(0, y, self.width(), y)
         matrix = self.matrix()
         offset = np.array([self.width()/2, self.height()/2]) + self.pan
-        render = []
-        for key, vertices, triangles, solid in self.meshes:
+        width, height = self.width(), self.height()
+        pixels = np.zeros((height,width,4),dtype=np.uint8)
+        depth_buffer = np.full((height,width),-np.inf)
+        pick_buffer = np.full((height,width),-1,dtype=np.int32)
+        self._pick_keys = [key for key,_,_,_ in self.meshes]
+        for mesh_index, (key, vertices, triangles, solid) in enumerate(self.meshes):
             if not len(vertices):
                 continue
             rotated = (vertices-self.centre) @ matrix.T
@@ -76,19 +81,34 @@ class Viewport(QtWidgets.QWidget):
             for ids in triangles:
                 a,b,c = rotated[list(ids)]
                 normal = np.cross(b-a,c-a)
-                if solid and normal[2] <= 0:
-                    continue
-                light = 0.56 + 0.44*abs(normal[2])/max(np.linalg.norm(normal),1e-15)
+                light = 0.48 + 0.52*abs(normal[2])/max(np.linalg.norm(normal),1e-15)
                 rgb = (40,157,215) if key in self.selected else (152,177,196)
-                color = QtGui.QColor(*(int(channel*light) for channel in rgb))
-                poly = QtGui.QPolygonF([QtCore.QPointF(*points[i]) for i in ids])
-                render.append((float((a[2]+b[2]+c[2])/3), key, poly, color))
-        self._hit = []
-        painter.setPen(QtCore.Qt.NoPen)
-        for depth, key, poly, color in sorted(render, key=lambda item:item[0]):
-            painter.setBrush(color)
-            painter.drawPolygon(poly)
-            self._hit.append((key,poly))
+                color = [int(channel*light) for channel in rgb]+[255]
+                coords = points[list(ids)]
+                xmin = max(0,int(np.floor(coords[:,0].min())))
+                xmax = min(width-1,int(np.ceil(coords[:,0].max())))
+                ymin = max(0,int(np.floor(coords[:,1].min())))
+                ymax = min(height-1,int(np.ceil(coords[:,1].max())))
+                if xmax < xmin or ymax < ymin:
+                    continue
+                x0,y0 = coords[0]; x1,y1 = coords[1]; x2,y2 = coords[2]
+                denominator = (y1-y2)*(x0-x2)+(x2-x1)*(y0-y2)
+                if abs(denominator) < 1e-12:
+                    continue
+                yy,xx = np.mgrid[ymin:ymax+1,xmin:xmax+1]
+                xx = xx+0.5; yy = yy+0.5
+                w0 = ((y1-y2)*(xx-x2)+(x2-x1)*(yy-y2))/denominator
+                w1 = ((y2-y0)*(xx-x2)+(x0-x2)*(yy-y2))/denominator
+                w2 = 1-w0-w1
+                depth = w0*a[2]+w1*b[2]+w2*c[2]
+                region = depth_buffer[ymin:ymax+1,xmin:xmax+1]
+                mask = (w0>=-1e-9)&(w1>=-1e-9)&(w2>=-1e-9)&(depth>region)
+                region[mask] = depth[mask]
+                pixels[ymin:ymax+1,xmin:xmax+1][mask] = color
+                pick_buffer[ymin:ymax+1,xmin:xmax+1][mask] = mesh_index
+        self._pick_buffer = pick_buffer
+        frame = QtGui.QImage(pixels.data,width,height,width*4,QtGui.QImage.Format_RGBA8888)
+        painter.drawImage(0,0,frame)
         painter.setPen(QtGui.QColor("#586b7c"))
         painter.drawText(18, 28, "fusionOS  /  PROGETTA LOCALE")
         if not self.meshes:
@@ -122,10 +142,11 @@ class Viewport(QtWidgets.QWidget):
 
     def mouseReleaseEvent(self, event):
         if event.button() == QtCore.Qt.LeftButton and self._press is not None and (event.position()-self._press).manhattanLength() < 4:
-            for key, poly in reversed(self._hit):
-                if poly.containsPoint(event.position(), QtCore.Qt.OddEvenFill):
-                    self.picked.emit(key)
-                    break
+            x,y = int(event.position().x()),int(event.position().y())
+            if self._pick_buffer is not None and 0<=y<self._pick_buffer.shape[0] and 0<=x<self._pick_buffer.shape[1]:
+                index = self._pick_buffer[y,x]
+                if index >= 0:
+                    self.picked.emit(self._pick_keys[index])
         self._last = self._press = None
 
     def wheelEvent(self, event):

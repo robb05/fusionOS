@@ -91,8 +91,7 @@ ma restano modificabili nella cronologia. La casella nel browser li rende visibi
 - Schizzi su piani XY a Z variabile; rivoluzione solo intorno a Y globale.
 - Raccordi/svuotamenti usano indici di spigoli e facce, non selezione grafica
   dei sottoelementi. Gli indici possono cambiare dopo modifiche a monte.
-- Visualizzatore iniziale **CPU**, con ordinamento dei triangoli per profondità:
-  può mostrare artefatti in intersezioni o scene complesse. Non è destinato a
+- Visualizzatore iniziale **CPU**, con depth buffer software. Non è destinato a
   scansioni pesanti; massimo 100.000 triangoli per corpo visualizzato.
 - Ricostruzione sincrona: modelli grandi possono bloccare temporaneamente l'interfaccia.
 - Nessun import della cronologia `.f3d`, nessuna trasformazione automatica mesh-solido.

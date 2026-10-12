@@ -22,7 +22,7 @@ Il salvataggio usa un file temporaneo adiacente e sostituzione atomica.
 
 In questa versione la precisione geometrica viene dal kernel. L'impostazione di
 qualità cambia solo la triangolazione di visualizzazione. Il visualizzatore CPU
-è transitorio: una futura versione dovrà adottare un viewport GPU con depth buffer,
+è transitorio: una futura versione dovrà adottare un viewport GPU (il prototipo ha un depth buffer software),
 selezione di facce/spigoli e identificazione dei sottoelementi.
 
 Il backup è una copia .foscad locale. Non sincronizza dati e non esegue rete.
